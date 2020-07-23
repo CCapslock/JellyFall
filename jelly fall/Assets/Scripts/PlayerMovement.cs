@@ -1,0 +1,43 @@
+﻿using UnityEngine;
+
+public class PlayerMovement : MonoBehaviour
+{
+	public float YDelay;
+
+	[SerializeField] private Vector3 _delay;
+	[SerializeField] private Vector3 _startPosition;
+	[SerializeField] private bool _delayCounted;
+	[SerializeField] private InputController _inputController;
+	[SerializeField] private Transform _playerTransform;
+	[SerializeField] private Vector2 _minScreenPosition, _maxScreenPosition;
+
+	private void Start()
+	{
+		_playerTransform = GetComponent<Transform>();
+		_inputController = FindObjectOfType<InputController>();
+		_delay = new Vector3(0, YDelay);
+		_minScreenPosition = _inputController.CameraForInput.ViewportToWorldPoint(new Vector2(0, 0));
+		_maxScreenPosition = _inputController.CameraForInput.ViewportToWorldPoint(new Vector2(1, 1));
+	}
+	private void Update()
+	{
+		if (_inputController.DragingStarted)
+		{
+			if (!_delayCounted)
+			{
+				_delay = _inputController.TouchPosition;
+				_startPosition = _playerTransform.position;
+				_delayCounted = true;
+			}
+			_playerTransform.position = _startPosition + _inputController.TouchPosition - _delay;
+			transform.position = _playerTransform.position;
+			Debug.Log(_playerTransform.position);
+		}
+		else
+		{
+			_delayCounted = false;
+		}
+		//ограничение экрана
+		transform.position = new Vector3(Mathf.Clamp(transform.position.x, _minScreenPosition.x, _maxScreenPosition.x), Mathf.Clamp(transform.position.y, _minScreenPosition.y, _maxScreenPosition.y), transform.position.z);
+	}
+}
