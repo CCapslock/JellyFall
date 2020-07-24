@@ -26,7 +26,7 @@ public class InputController : MonoBehaviour
             {
                 TouchPosition = CameraForInput.ScreenToWorldPoint(touch.position);
             }
-            else if(touch.phase == TouchPhase.Moved)
+            else if(touch.phase == TouchPhase.Ended)
             {
                 DragingStarted = false;
             }
